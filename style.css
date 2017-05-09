@@ -5,6 +5,20 @@ html {
   padding: 0;
 }
 
-#map {
+.container {
   height: 100%;
+  position: relative;
+}
+
+#map {
+  bottom:0px;
+  height: 100%;
+  /*left: 362px;*/
+  position: absolute;
+  right: 0px;
+}
+
+#pano {
+  width: 300px;
+  height: 300px;
 }

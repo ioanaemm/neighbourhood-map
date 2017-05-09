@@ -1,6 +1,4 @@
 var markers = [];
-
-
 function initMap() {
 
 
@@ -117,6 +115,13 @@ function initMap() {
     {title: "31 Avenue La Motte Picquet 75007 Paris, France", location: {lat: "48.8536439197085", lng: "2.305679919708498"}}
   ];
 
+  // var textInfoWindow = "<p id='content'> </p>";
+  //
+  //
+  var largeInfowindow = new google.maps.InfoWindow();
+
+
+  // created a marker for every locations in the array
   for(var i = 0; i < locations.length; i++) {
 
     var position = locations[i].location;
@@ -129,17 +134,25 @@ function initMap() {
       draggable: true,
       animation: google.maps.Animation.DROP,
       icon: iconBase,
-      id: i
+      id: i,
+      title: title
+
     });
 
    markers.push(marker);
+
+   //added a click event listener for every marker selected
    marker.addListener("click", (function(target){
       return function() {
         deselectMarkers();
         toggleMarker(target);
+        // largeInfowindow.open(map, target);
+        showInfoWindow(this, largeInfowindow);
+
       }
    })(marker));
   }
+
   function deselectMarkers(){
     markers.forEach(function(crtElement){
       crtElement.setAnimation(null);
@@ -154,4 +167,36 @@ function initMap() {
     }
   }
 
+  function showInfoWindow(marker, infowindow) {
+    if(infowindow.marker !== null) {
+      infowindow.marker = marker;
+      infowindow.setContent('<div>' + marker.title +'</div>');
+      var streetViewService = new google.maps.StreetViewService();
+      var radius = 50;
+      function getStreetView(data, status) {
+        if (status == google.maps.StreetViewStatus.OK) {
+          var nearStreetViewLocation = data.location.latLng;
+          var heading = google.maps.geometry.spherical.computeHeading(
+            nearStreetViewLocation, marker.position);
+            infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
+            var panoramaOptions = {
+              position: nearStreetViewLocation,
+              pov: {
+                heading: heading,
+                pitch: 30
+              }
+            };
+          var panorama = new google.maps.StreetViewPanorama(
+            document.getElementById('pano'), panoramaOptions);
+        } else {
+          infowindow.setContent('<div>' + marker.title + '</div>' +
+            '<div>No Street View Found</div>');
+        }
+      }
+      streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
+      infowindow.open(map, marker);
+    }
+
+
+  }
 }
