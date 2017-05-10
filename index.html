@@ -3,17 +3,21 @@
   <head>
     <title>Neighbourhood Map</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:100i,300,400,700" rel="stylesheet">
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
     <script src="main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
   </head>
   <body>
-
-    <!-- <input data-bind="value: filterValue, valueUpdate: 'afterkeydown'">
-    <ul data-bind="foreach: filteredItems">
-      <li data-bind="text: title, click: $parent.selectItem"></li>
-    </ul> -->
-
+    <div class="container">
+      <h3> The best places where you can find cannoli in Paris! </h3>
+      <input type="text" placeholder="Search for the best cannoli in the city" data-bind="value: filterValue, valueUpdate: 'afterkeydown'">
+      <ul data-bind="foreach: filteredItems">
+        <li class="item" data-bind="text: title, click: $parent.selectItem"></li>
+      </ul>
+      <img src="images/chef.jpeg" alt="patistry-chef">
+    </div>
     <div id="map"> </div>
 
 

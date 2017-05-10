@@ -1,6 +1,33 @@
 var markers = [];
 function initMap() {
 
+  var locations = [
+    {title: "6 Rue Jean-Jacques Rousseau, 75001 Paris, France", location: {lat: "48.86219089999999", lng: "2.3400461"}},
+    {title: "150 rue Damrémont 75018 Paris, France", location: {lat: "48.8961279", lng: "2.338318"}},
+    {title: "25 rue Boissy dAnglas 75008 Paris, France", location: {lat: "48.8693263", lng: "2.3219794"}},
+    {title: "5 rue Saint-Bernard 75011 Paris, France", location: {lat: "48.8693263", lng: "2.3519794"}},
+    {title: "31 Avenue La Motte Picquet 75007 Paris, France", location: {lat: "48.8536439197085", lng: "2.305679919708498"}}
+  ];
+
+  function ViewModel() {
+  	var self = this;
+    self.locations = locations;
+    self.filterValue = ko.observable('');
+   	self.filteredItems = ko.computed(function(){
+    	return self.locations.filter(function(location){
+      	return location.title.includes(self.filterValue());
+      });
+    });
+
+
+
+    self.selectItem = function(selectedElement) {
+    	console.log(selectedElement);
+    }
+  }
+  ko.applyBindings(new ViewModel());
+
+
 
   var styles = [
     {
@@ -107,17 +134,7 @@ function initMap() {
     styles: styles
   });
 
-  var locations = [
-    {title: "6 Rue Jean-Jacques Rousseau, 75001 Paris, France", location: {lat: "48.86219089999999", lng: "2.3400461"}},
-    {title: "150 rue Damrémont 75018 Paris, France", location: {lat: "48.8961279", lng: "2.338318"}},
-    {title: "25 rue Boissy dAnglas 75008 Paris, France", location: {lat: "48.8693263", lng: "2.3219794"}},
-    {title: "5 rue Saint-Bernard 75011 Paris, France", location: {lat: "48.8693263", lng: "2.3519794"}},
-    {title: "31 Avenue La Motte Picquet 75007 Paris, France", location: {lat: "48.8536439197085", lng: "2.305679919708498"}}
-  ];
 
-  // var textInfoWindow = "<p id='content'> </p>";
-  //
-  //
   var largeInfowindow = new google.maps.InfoWindow();
 
 
@@ -146,7 +163,6 @@ function initMap() {
       return function() {
         deselectMarkers();
         toggleMarker(target);
-        // largeInfowindow.open(map, target);
         showInfoWindow(this, largeInfowindow);
 
       }
@@ -198,28 +214,3 @@ function initMap() {
     }
   }
 }
-
-// function ViewModel() {
-// 	var self = this;
-//   self.locations = [
-//     {title: "6 Rue Jean-Jacques Rousseau, 75001 Paris, France", location: {lat: "48.86219089999999", lng: "2.3400461"}},
-//     {title: "150 rue Damrémont 75018 Paris, France", location: {lat: "48.8961279", lng: "2.338318"}},
-//     {title: "25 rue Boissy dAnglas 75008 Paris, France", location: {lat: "48.8693263", lng: "2.3219794"}},
-//     {title: "5 rue Saint-Bernard 75011 Paris, France", location: {lat: "48.8693263", lng: "2.3519794"}},
-//     {title: "31 Avenue La Motte Picquet 75007 Paris, France", location: {lat: "48.8536439197085", lng: "2.305679919708498"}}
-//   ];
-//
-//   self.filterValue = ko.observable('');
-//  	self.filteredItems = ko.computed(function(){
-//  	 	console.log(self.locations);
-//   	return self.locations.filter(function(location){
-//     	return location.title.includes(self.filterValue());
-//     });
-//   });
-//
-//
-//
-//   self.selectItem = function(selectedElement) {
-//   	console.log(selectedElement);
-//   }
-//   
