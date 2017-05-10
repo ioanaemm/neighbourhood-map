@@ -1,28 +1,22 @@
-var markers = [];
+var locations = [
+  {title: "6 Rue Jean-Jacques Rousseau, 75001 Paris, France", coordinates: {lat: 48.86219089999999, lng: 2.3400461}},
+  {title: "150 rue Damrémont 75018 Paris, France", coordinates: {lat: 48.8961279, lng: 2.338318}},
+  {title: "25 rue Boissy dAnglas 75008 Paris, France", coordinates: {lat: 48.8693263, lng: 2.3219794}},
+  {title: "5 rue Saint-Bernard 75011 Paris, France", coordinates: {lat: 48.8693263, lng: 2.3519794}},
+  {title: "31 Avenue La Motte Picquet 75007 Paris, France", coordinates: {lat: 48.8536439197085, lng: 2.305679919708498}}
+];
+
 function initMap() {
-
-  var locations = [
-    {title: "6 Rue Jean-Jacques Rousseau, 75001 Paris, France", location: {lat: "48.86219089999999", lng: "2.3400461"}},
-    {title: "150 rue Damrémont 75018 Paris, France", location: {lat: "48.8961279", lng: "2.338318"}},
-    {title: "25 rue Boissy dAnglas 75008 Paris, France", location: {lat: "48.8693263", lng: "2.3219794"}},
-    {title: "5 rue Saint-Bernard 75011 Paris, France", location: {lat: "48.8693263", lng: "2.3519794"}},
-    {title: "31 Avenue La Motte Picquet 75007 Paris, France", location: {lat: "48.8536439197085", lng: "2.305679919708498"}}
-  ];
-
   function ViewModel() {
   	var self = this;
-    self.locations = locations;
     self.filterValue = ko.observable('');
    	self.filteredItems = ko.computed(function(){
-    	return self.locations.filter(function(location){
+    	return locations.filter(function(location){
       	return location.title.includes(self.filterValue());
       });
     });
-
-
-
     self.selectItem = function(selectedElement) {
-    	console.log(selectedElement);
+    	(onMarkerClick(selectedElement.marker))();
     }
   }
   ko.applyBindings(new ViewModel());
@@ -135,43 +129,35 @@ function initMap() {
   });
 
 
-  var largeInfowindow = new google.maps.InfoWindow();
-
+  var largeInfoWindow = new google.maps.InfoWindow();
 
   // created a marker for every locations in the array
-  for(var i = 0; i < locations.length; i++) {
-
-    var position = locations[i].location;
-    position.lat = parseFloat(position.lat);
-    position.lng = parseFloat(position.lng);
-    var title = locations[i].title;
-    var marker = new google.maps.Marker({
-      position: position,
+  locations.forEach(function(crtLocation, index){
+    var newMarker = new google.maps.Marker({
+      position: crtLocation.coordinates,
       map: map,
       draggable: true,
       animation: google.maps.Animation.DROP,
       icon: iconBase,
-      id: i,
-      title: title
-
+      id: index,
+      title: crtLocation.title
     });
 
-   markers.push(marker);
+    crtLocation.marker = newMarker;
+    //added a click event listener for every marker selected
+    newMarker.addListener("click", (onMarkerClick(newMarker)));
+  });
 
-   //added a click event listener for every marker selected
-   marker.addListener("click", (function(target){
-      return function() {
-        deselectMarkers();
-        toggleMarker(target);
-        showInfoWindow(this, largeInfowindow);
-
-      }
-   })(marker));
+  function onMarkerClick(target) {
+     return function() {
+       deselectMarkers();
+       toggleMarker(target);
+       showInfoWindow(target);
+     }
   }
-
   function deselectMarkers(){
-    markers.forEach(function(crtElement){
-      crtElement.setAnimation(null);
+    locations.forEach(function(crtLocation){
+        crtLocation.marker.setAnimation(null);
     });
   }
 
@@ -183,10 +169,10 @@ function initMap() {
     }
   }
 
-  function showInfoWindow(marker, infowindow) {
-    if(infowindow.marker !== null) {
-      infowindow.marker = marker;
-      infowindow.setContent('<div>' + marker.title +'</div>');
+  function showInfoWindow(marker) {
+    if(largeInfoWindow.marker !== null) {
+      largeInfoWindow.marker = marker;
+      largeInfoWindow.setContent('<div>' + marker.title +'</div>');
       var streetViewService = new google.maps.StreetViewService();
       var radius = 50;
       function getStreetView(data, status) {
@@ -194,7 +180,7 @@ function initMap() {
           var nearStreetViewLocation = data.location.latLng;
           var heading = google.maps.geometry.spherical.computeHeading(
             nearStreetViewLocation, marker.position);
-            infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
+            largeInfoWindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
             var panoramaOptions = {
               position: nearStreetViewLocation,
               pov: {
@@ -205,12 +191,12 @@ function initMap() {
           var panorama = new google.maps.StreetViewPanorama(
             document.getElementById('pano'), panoramaOptions);
         } else {
-          infowindow.setContent('<div>' + marker.title + '</div>' +
+          largeInfoWindow.setContent('<div>' + marker.title + '</div>' +
             '<div>No Street View Found</div>');
         }
       }
       streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
-      infowindow.open(map, marker);
+      largeInfoWindow.open(map, marker);
     }
   }
 }
