@@ -12,13 +12,18 @@
       <h3> The best places where you can find cannoli in Paris! </h3>
       <input type="text" placeholder="Search for the best cannoli in the city" data-bind="value: filterValue, valueUpdate: 'afterkeydown'">
       <ul data-bind="foreach: filteredItems">
-        <li class="item" data-bind="text: title, click: $parent.selectItem"></li>
+        <li class="item" data-bind="text: name, click: $parent.selectItem"></li>
       </ul>
       <img src="images/chef.jpeg" alt="patistry-chef">
     </div>
     <div id="map"> </div>
   </body>
 
+
+  <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
   <script src="main.js"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIAxuruyR4AuwikKDeraClZ3dfTbBKJ0s&libraries=drawing,geometry&v=3&&callback=initMap"></script>
