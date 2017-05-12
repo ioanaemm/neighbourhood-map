@@ -39,7 +39,7 @@ function initMap() {
         } else {
           self.menuIsShowing(true);
         }
-      }
+      };
       self.currentIcon = ko.computed(function(){
         if(self.menuIsShowing()) {
           return "&#x2716;";
@@ -66,7 +66,7 @@ function initMap() {
       self.selectItem = function(selectedElement) {
         self.menuIsShowing(false);
       	(onMarkerClick(selectedElement.marker))();
-      }
+      };
 
     }
     ko.applyBindings(new ViewModel());
@@ -206,7 +206,7 @@ function initMap() {
          deselectMarkers();
          toggleMarker(target);
          showInfoWindow(target);
-       }
+       };
     }
 
     // iterate over the locations array in order to stop the animation for the markers
@@ -229,6 +229,31 @@ function initMap() {
     // after clicking on a marker a info window appears
     // which contains a tittle
     function showInfoWindow(marker) {
+      function getStreetView(data, status) {
+        // check to see if the result's status from StreetViewService is ok
+        // if it is, then store the position of the streetview image in a variable
+        // for creating a panorama we need to create the heading
+        // as in compute the position of the marker with the streetview's image
+        if (status == google.maps.StreetViewStatus.OK) {
+          var nearStreetViewLocation = data.location.latLng;
+          var heading = google.maps.geometry.spherical.computeHeading(
+            nearStreetViewLocation, marker.position);
+            largeInfoWindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
+            // set the options for the panorama
+            var panoramaOptions = {
+              position: nearStreetViewLocation,
+              pov: {
+                heading: heading,
+                pitch: 30
+              }
+            };
+          var panorama = new google.maps.StreetViewPanorama(
+            document.getElementById('pano'), panoramaOptions);
+        } else {
+          largeInfoWindow.setContent('<div>' + marker.title + '</div>' +
+            '<div>No Street View Found</div>');
+        }
+      }
       if(largeInfoWindow.marker !== null) {
         largeInfoWindow.marker = marker;
         largeInfoWindow.setContent('<div>' + marker.title +'</div>');
@@ -237,31 +262,7 @@ function initMap() {
         // this piece of code is the same as the one from Udacity course
         var streetViewService = new google.maps.StreetViewService();
         var radius = 50;
-        function getStreetView(data, status) {
-          // check to see if the result's status from StreetViewService is ok
-          // if it is, then store the position of the streetview image in a variable
-          // for creating a panorama we need to create the heading
-          // as in compute the position of the marker with the streetview's image
-          if (status == google.maps.StreetViewStatus.OK) {
-            var nearStreetViewLocation = data.location.latLng;
-            var heading = google.maps.geometry.spherical.computeHeading(
-              nearStreetViewLocation, marker.position);
-              largeInfoWindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
-              // set the options for the panorama
-              var panoramaOptions = {
-                position: nearStreetViewLocation,
-                pov: {
-                  heading: heading,
-                  pitch: 30
-                }
-              };
-            var panorama = new google.maps.StreetViewPanorama(
-              document.getElementById('pano'), panoramaOptions);
-          } else {
-            largeInfoWindow.setContent('<div>' + marker.title + '</div>' +
-              '<div>No Street View Found</div>');
-          }
-        }
+
         streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
         largeInfoWindow.open(map, marker);
       }
