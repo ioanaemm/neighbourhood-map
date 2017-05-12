@@ -1,9 +1,9 @@
 # How to run the application:
-Clone repository
+1) Clone repository
 
-Run:
+2) Open up a terminal prompt and run:
 ```shell
 python -m SimpleHTTPServer
 ```
 -------
-Now you just need to open a browser, go to http://localhost:8000 and you can see the application
+3) Open a browser, go to http://localhost:8000 and you can see the application
