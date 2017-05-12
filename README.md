@@ -1,4 +1,4 @@
-##### How to run the application:
+# How to run the application:
 Clone repository
 Run:
 ```shell
