@@ -5,18 +5,18 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css?family=Lato:100i,300,400,700" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <meta name="viewport" content="initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
   </head>
   <body>
-    <div class="container">
-      <i id="close-btn" class="fa fa-close fa-2x"></i>
+
+    <div class="container" data-bind="css: {'is-visible': menuIsShowing}">
+      <p data-bind="click: toggleMenu, html: currentIcon" id="toggle"></p>
       <h3> The best coffee places in Paris! </h3>
-      <input type="text"  placeholder="Search for the best coffee in the city" data-bind="value: filterValue, valueUpdate: 'afterkeydown'">
+      <input type="text" id="search" placeholder="Search for the best coffee in the city" data-bind="value: filterValue, valueUpdate: 'afterkeydown'">
       <ul data-bind="foreach: filteredItems">
         <li class="item" data-bind="text: name, click: $parent.selectItem"></li>
       </ul>
-      <img src="images/barista.png" alt="barista">
     </div>
     <div id="map"> </div>
   </body>

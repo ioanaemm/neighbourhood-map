@@ -12,7 +12,7 @@ function initMap() {
   var foursquareURL = apiURL + 'client_id=' + foursquareClientID +  '&client_secret=' + foursquareSecret +'&v=' + foursquareVersion;
   foursquareURL += "&ll="+cityLocation.lat + "%2C%20" + cityLocation.lng;
   foursquareURL += '&query=coffee';
-  //foursquareURL += '&intent=checkin';
+
 
   $.ajax({
     url: foursquareURL,
@@ -20,6 +20,9 @@ function initMap() {
       locations = data.response.venues;
       console.log(locations);
       initApp();
+    },
+    error: function() {
+      alert('Sorry, something went wrong. Please try again later. :)');
     }
   });
 
@@ -27,6 +30,23 @@ function initMap() {
     function ViewModel() {
     	var self = this;
       self.filterValue = ko.observable('');
+
+      self.menuIsShowing = ko.observable(true);
+      self.toggleMenu = function() {
+        console.log('toggleMenu()');
+        if(self.menuIsShowing()) {
+          self.menuIsShowing(false);
+        } else {
+          self.menuIsShowing(true);
+        }
+      }
+      self.currentIcon = ko.computed(function(){
+        if(self.menuIsShowing()) {
+          return "&#x2716;";
+        } else {
+          return "&#9776;";
+        }
+      });
 
       // this part creates the filter functionality for the app
      	self.filteredItems = ko.computed(function(){
@@ -44,8 +64,10 @@ function initMap() {
 
       // after clicking on an item from the list, the marker will show
       self.selectItem = function(selectedElement) {
+        self.menuIsShowing(false);
       	(onMarkerClick(selectedElement.marker))();
       }
+
     }
     ko.applyBindings(new ViewModel());
 
@@ -244,7 +266,5 @@ function initMap() {
         largeInfoWindow.open(map, marker);
       }
     }
-
-    
   }
 }

@@ -20,9 +20,22 @@ img{
   margin-right: auto;
 }
 
-input[type="text"] {
+ul {
+  -webkit-margin-before: 0em;
+  -webkit-margin-after: 0em;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+  -webkit-padding-start: 0px;
+  padding-left: 5%;
+  padding-right: 5%;
+  padding-top: 20px;
+  overflow: auto;
+  height: calc(100vh - 100px);
+}
+
+#search {
   width: 90%;
-  height: 30px;
+  height: 50px;
   margin-left: 5%;
   outline: none;
   border: 2px solid #ED3237;
@@ -33,39 +46,68 @@ input[type="text"] {
   font-weight: 400;
   color: #fff;
   box-sizing: border-box;
+  text-align: center;
 }
 
-input[type="text"]::-webkit-input-placeholder {
+#search::-webkit-input-placeholder {
   color: #fff;
   font-weight: 500;
   letter-spacing: 1px;
 }
 
 .container {
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.9);
   border-radius: 3px;
-  opacity: 0.9;
   width: 450px;
   position: fixed;
   top: 0px;
-  left: 0px;
+  left: -450px;
   z-index: 1;
-  overflow: auto;
   height: 100vh;
+  transition: left 500ms;
+  -webkit-transition: left 500ms;
 
 }
 
+.container.is-visible {
+  left: 0px;
+}
+
+@media(max-width: 500px) {
+  .container {
+    width: 250px;
+    left: -250px;
+    font-size: 14px;
+  }
+
+  h3 {
+    font-size: 17px;
+  }
+
+  #search {
+    height: 35px;
+    font-size: 11px;
+    letter-spacing: 0px;
+  }
+}
+
 .item {
-  color: #D69345; /*#BD897E;*/
+  color: #D69345;
   font-weight: 700;
   cursor: pointer;
-
+  list-style-type: none;
+  text-align: center;
+  border: 1px solid #f8d4a9;
+  margin-bottom: 5px;
+  padding: 10px;
 }
 
 .item:hover {
   color: #373435;
   font-weight: 400;
 }
+
+
 
 #map {
   overflow: hidden;
@@ -82,8 +124,19 @@ input[type="text"]::-webkit-input-placeholder {
   height: 300px;
 }
 
-#close-btn {
-  float: right;
-  margin-right: 15px;
+#toggle {
+  background: rgba(255, 255, 255, 0.9);
+  position: absolute;
+  top: 0;
+  right: -45px;
+  height: 45px;
+  line-height: 45px;
+  width: 45px;
+  color: #ED3237;
+  border: 0;
+  font-size: 1.4em;
+  font-weight: bold;
   cursor: pointer;
+  text-align: center;
+  margin: 0px;
 }
