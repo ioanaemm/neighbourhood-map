@@ -8,7 +8,7 @@ html {
 }
 
 h3 {
-  color: #FF0507;
+  color: #606062;
   font-weight: 400;
   font-size: 25px;
   text-align: center;
@@ -25,26 +25,26 @@ input[type="text"] {
   height: 30px;
   margin-left: 5%;
   outline: none;
-  border: 2px solid #2c3e50;
-  padding: 5px;
+  border: 2px solid #ED3237;
+  background-color: #ED3237;
+  border-radius: 3px;
+  padding: 10px;
   font-size: 15px;
   font-weight: 400;
-  color: #2c3e50;
+  color: #fff;
   box-sizing: border-box;
 }
 
+input[type="text"]::-webkit-input-placeholder {
+  color: #fff;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
 .container {
-  /*height: 100%;
-  position: relative;
   background-color: #fff;
   border-radius: 3px;
-  opacity: 0.8;
-  width: 450px;*/
-  height: 100%;
-  position: relative;
-  background-color: #fff;
-  border-radius: 3px;
-  opacity: 0.8;
+  opacity: 0.9;
   width: 450px;
   position: fixed;
   top: 0px;
@@ -52,24 +52,22 @@ input[type="text"] {
   z-index: 1;
   overflow: auto;
   height: 100vh;
+
 }
 
 .item {
-  color: #3E0000;
+  color: #D69345; /*#BD897E;*/
   font-weight: 700;
   cursor: pointer;
+
 }
 
 .item:hover {
-  color: #FF6508;
+  color: #373435;
+  font-weight: 400;
 }
 
 #map {
-  /*bottom: 0px;
-  height: 100%;
-  left: 450px;
-  position: absolute;
-  right: 0px;*/
   overflow: hidden;
   position: fixed!important;
   top: 0px;
@@ -82,4 +80,10 @@ input[type="text"] {
 #pano {
   width: 300px;
   height: 300px;
+}
+
+#close-btn {
+  float: right;
+  margin-right: 15px;
+  cursor: pointer;
 }

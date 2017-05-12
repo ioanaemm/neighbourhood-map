@@ -244,5 +244,7 @@ function initMap() {
         largeInfoWindow.open(map, marker);
       }
     }
+
+    
   }
 }
