@@ -1,6 +1,10 @@
 var locations = [];
 var cityLocation = {lat: 48.863614, lng: 2.3522219};
 
+function googleMapsErrorHandler() {
+  alert('Sorry, there was an error with Google Maps.');
+}
+
 function initMap() {
 
   // stored all the components needed in variables for the Foursquare's API ajax call
@@ -18,11 +22,10 @@ function initMap() {
     url: foursquareURL,
     success: function(data) {
       locations = data.response.venues;
-      console.log(locations);
       initApp();
     },
     error: function() {
-      alert('Sorry, something went wrong. Please try again later. :)');
+      alert('Sorry, there was an error with Foursquare\'s API.');
     }
   });
 
@@ -62,10 +65,18 @@ function initMap() {
         });
       });
 
+      self.resultCount = ko.computed(function(){
+        if(self.filteredItems().length > 0 ) {
+          return self.filteredItems().length + " results found.";
+        } else {
+          return "No results found.";
+        }
+      });
+
       // after clicking on an item from the list, the marker will show
-      self.selectItem = function(selectedElement) {
+      self.selectItem = function(crtLocation) {
         self.menuIsShowing(false);
-      	(onMarkerClick(selectedElement.marker))();
+      	(onMarkerClick(crtLocation))();
       };
 
     }
@@ -197,15 +208,18 @@ function initMap() {
       //
       crtLocation.marker = newMarker;
       //added a click event listener for every marker selected
-      newMarker.addListener("click", (onMarkerClick(newMarker)));
+      newMarker.addListener("click", (onMarkerClick(crtLocation)));
+
     });
 
     // every time the user clicks on a marker, it starts to bounce and an info window appears
     function onMarkerClick(target) {
        return function() {
-         deselectMarkers();
-         toggleMarker(target);
-         showInfoWindow(target);
+        deselectMarkers();
+        map.setZoom(15);
+        map.setCenter(target.marker.getPosition());
+        toggleMarker(target);
+        showInfoWindow(target);
        };
     }
 
@@ -219,16 +233,18 @@ function initMap() {
     // if there is an animation we set it to null
     //otherwise we make the marker to bounce
     function toggleMarker(target) {
-      if (target.getAnimation() !== null) {
-        target.setAnimation(null);
+      if (target.marker.getAnimation() !== null) {
+        target.marker.setAnimation(null);
       } else {
-        target.setAnimation(google.maps.Animation.BOUNCE);
+        target.marker.setAnimation(google.maps.Animation.BOUNCE);
       }
     }
 
     // after clicking on a marker a info window appears
     // which contains a tittle
-    function showInfoWindow(marker) {
+    function showInfoWindow(crtLocation) {
+      var venueInfo = "<p>Number of people who have ever checked-in here: " + crtLocation.stats.checkinsCount + "</p>";
+      venueInfo += "<p>"+ crtLocation.hereNow.summary +" right now. </p>";
       function getStreetView(data, status) {
         // check to see if the result's status from StreetViewService is ok
         // if it is, then store the position of the streetview image in a variable
@@ -237,8 +253,8 @@ function initMap() {
         if (status == google.maps.StreetViewStatus.OK) {
           var nearStreetViewLocation = data.location.latLng;
           var heading = google.maps.geometry.spherical.computeHeading(
-            nearStreetViewLocation, marker.position);
-            largeInfoWindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
+            nearStreetViewLocation, crtLocation.marker.position);
+            largeInfoWindow.setContent('<div>' + crtLocation.marker.title + '</div><div id="pano"></div>' + venueInfo);
             // set the options for the panorama
             var panoramaOptions = {
               position: nearStreetViewLocation,
@@ -250,22 +266,23 @@ function initMap() {
           var panorama = new google.maps.StreetViewPanorama(
             document.getElementById('pano'), panoramaOptions);
         } else {
-          largeInfoWindow.setContent('<div>' + marker.title + '</div>' +
-            '<div>No Street View Found</div>');
+          largeInfoWindow.setContent('<div>' + crtLocation.marker.title + '</div>' +
+            '<div>No Street View Found</div>' + venueInfo);
         }
       }
+
       if(largeInfoWindow.marker !== null) {
-        largeInfoWindow.marker = marker;
-        largeInfoWindow.setContent('<div>' + marker.title +'</div>');
+        largeInfoWindow.marker = crtLocation.marker;
+        largeInfoWindow.setContent('<div>' + crtLocation.marker.title +'</div>');
 
         //created an instance of the StreetViewService class in order to show a picture of the location
         // this piece of code is the same as the one from Udacity course
         var streetViewService = new google.maps.StreetViewService();
         var radius = 50;
-
-        streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
-        largeInfoWindow.open(map, marker);
+        streetViewService.getPanoramaByLocation(crtLocation.marker.position, radius, getStreetView);
+        largeInfoWindow.open(map, crtLocation.marker);
       }
+
     }
   }
 }

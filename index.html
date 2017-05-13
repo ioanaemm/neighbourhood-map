@@ -10,15 +10,16 @@
   </head>
   <body>
 
-    <div class="container" data-bind="css: {'is-visible': menuIsShowing}">
+    <aside class="container" data-bind="css: {'is-visible': menuIsShowing}">
       <p data-bind="click: toggleMenu, html: currentIcon" id="toggle"></p>
       <h3> The best coffee places in Paris! </h3>
       <input type="text" id="search" placeholder="Search for the best coffee in the city" data-bind="value: filterValue, valueUpdate: 'afterkeydown'">
       <ul data-bind="foreach: filteredItems">
         <li class="item" data-bind="text: name, click: $parent.selectItem"></li>
       </ul>
-    </div>
-    <div id="map"> </div>
+      <p id="result-count" data-bind="html: resultCount"> </p>
+    </aside>
+    <section id="map"> </section>
   </body>
 
 
@@ -28,5 +29,5 @@
   crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
   <script src="main.js"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIAxuruyR4AuwikKDeraClZ3dfTbBKJ0s&libraries=drawing,geometry&v=3&&callback=initMap"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIAxuruyR4AuwikKDeraClZ3dfTbBKJ0s&libraries=drawing,geometry&v=3&&callback=initMap" onerror="googleMapsErrorHandler()"></script>
 </html>

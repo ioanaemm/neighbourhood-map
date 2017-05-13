@@ -30,7 +30,7 @@ ul {
   padding-right: 5%;
   padding-top: 20px;
   overflow: auto;
-  height: calc(100vh - 100px);
+  max-height: calc(100vh - 200px);
 }
 
 #search {
@@ -53,6 +53,12 @@ ul {
   color: #fff;
   font-weight: 500;
   letter-spacing: 1px;
+}
+
+#result-count {
+  text-align: center;
+  font-weight: 700;
+  opacity: 0.4;
 }
 
 .container {
